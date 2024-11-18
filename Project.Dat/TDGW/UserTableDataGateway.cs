@@ -6,25 +6,12 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Oracle.ManagedDataAccess.Client;
-
 
 namespace Project.Data.TDGW
 {
     public class UserTableDataGateway
     {
-        string host = "dbsys.cs.vsb.cz";
-        string port = "1521";
-        string sid = "oracle";
-        string username = "FOU0027";
-        string password = "VO2fGM6Q60YP3NVG";
-
-        string connectionString;
-
-        public UserTableDataGateway()
-        {
-            connectionString = $"User Id={username};Password={password};Data Source=(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST={host})(PORT={port}))(CONNECT_DATA=(SID={sid})));Connection Timeout=60";
-        }
+        private string connString = "#TODO: Add connection string";
 
         public UserDTO GetUserById(int id)
         {
@@ -32,14 +19,14 @@ namespace Project.Data.TDGW
             var query = "SELECT employee_id, first_name, last_name, password, role " +
                         "FROM employee " +
                         "WHERE employee_id  = @id;";
-            using (OracleConnection connection = new OracleConnection(connectionString))
+            using (SqlConnection connection = new SqlConnection(connString))
             {
                 connection.Open();
-                using (OracleCommand command = new OracleCommand(query, connection))
+                using (SqlCommand command = new SqlCommand(query, connection))
                 {
-                    command.Parameters.Add("id", OracleDbType.Int32).Value = id;
+                    command.Parameters.AddWithValue("id", id);
 
-                    using (OracleDataReader reader = command.ExecuteReader())
+                    using (SqlDataReader reader = command.ExecuteReader())
                     {
                         result.Load(reader);
                     }
@@ -62,12 +49,12 @@ namespace Project.Data.TDGW
             DataTable result = new DataTable();
             var query = "SELECT employee_id, first_name, last_name, password, role " +
                         "FROM employee;";
-            using (OracleConnection connection = new OracleConnection(connectionString))
+            using (SqlConnection connection = new SqlConnection(connString))
             {
                 connection.Open();
-                using (OracleCommand command = new OracleCommand(query, connection))
+                using (SqlCommand command = new SqlCommand(query, connection))
                 {
-                    using (OracleDataReader reader = command.ExecuteReader())
+                    using (SqlDataReader reader = command.ExecuteReader())
                     {
                         result.Load(reader);
                     }
@@ -94,15 +81,15 @@ namespace Project.Data.TDGW
         {
             var query = "INSERT INTO employee (first_name, last_name, password, role) " +
                         "VALUES (@first_name, @last_name, @password, @role);";
-            using (OracleConnection connection = new OracleConnection(connectionString))
+            using (SqlConnection connection = new SqlConnection(connString))
             {
                 connection.Open();
-                using (OracleCommand command = new OracleCommand(query, connection))
+                using (SqlCommand command = new SqlCommand(query, connection))
                 {
-                    command.Parameters.Add("first_name", OracleDbType.Int32).Value = user.FirstName;
-                    command.Parameters.Add("last_name", OracleDbType.Int32).Value = user.LastName;
-                    command.Parameters.Add("password", OracleDbType.Int32).Value = user.Password;
-                    command.Parameters.Add("role", OracleDbType.Int32).Value = user.Role;
+                    command.Parameters.AddWithValue("first_name", user.FirstName);
+                    command.Parameters.AddWithValue("last_name", user.LastName);
+                    command.Parameters.AddWithValue("password", user.Password);
+                    command.Parameters.AddWithValue("role", user.Role);
 
                     command.ExecuteNonQuery();
                 }
@@ -113,16 +100,16 @@ namespace Project.Data.TDGW
         {
             var query = "UPDATE employee SET first_name = @first_name, last_name = @last_name, password = @password, role = @role " +
                         "WHERE employee_id = @employee_id;";
-            using (OracleConnection connection = new OracleConnection(connectionString))
+            using (SqlConnection connection = new SqlConnection(connString))
             {
                 connection.Open();
-                using (OracleCommand command = new OracleCommand(query, connection))
+                using (SqlCommand command = new SqlCommand(query, connection))
                 {
-                    command.Parameters.Add("employee_id", OracleDbType.Int32).Value = user.Id;
-                    command.Parameters.Add("first_name", OracleDbType.Int32).Value = user.FirstName;
-                    command.Parameters.Add("last_name", OracleDbType.Int32).Value = user.LastName;
-                    command.Parameters.Add("password", OracleDbType.Int32).Value = user.Password;
-                    command.Parameters.Add("role", OracleDbType.Int32).Value = user.Role;
+                    command.Parameters.AddWithValue("employee_id", user.Id);
+                    command.Parameters.AddWithValue("first_name", user.FirstName);
+                    command.Parameters.AddWithValue("last_name", user.LastName);
+                    command.Parameters.AddWithValue("password", user.Password);
+                    command.Parameters.AddWithValue("role", user.Role);
 
                     command.ExecuteNonQuery();
                 }
@@ -132,12 +119,12 @@ namespace Project.Data.TDGW
         public void DeleteUser(int id)
         {
             var query = "DELETE FROM employee WHERE employee_id = @employee_id;";
-            using (OracleConnection connection = new OracleConnection(connectionString))
+            using (SqlConnection connection = new SqlConnection(connString))
             {
                 connection.Open();
-                using (OracleCommand command = new OracleCommand(query, connection))
+                using (SqlCommand command = new SqlCommand(query, connection))
                 {
-                    command.Parameters.Add("employee_id", OracleDbType.Int32).Value = id;
+                    command.Parameters.AddWithValue("employee_id    ", id);
 
                     command.ExecuteNonQuery();
                 }

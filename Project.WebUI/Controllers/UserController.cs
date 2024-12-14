@@ -18,8 +18,8 @@ namespace Project.WebUI.Controllers
             {
                 models.Add(new UserModel(user.Id, user.FirstName, user.LastName, user.Password, user.Role));
             }
-            ViewBag.Users = models;
-            return View();
+
+            return View(models);
         }
 
         // GET: UserController/Details/5
@@ -29,8 +29,8 @@ namespace Project.WebUI.Controllers
             script.Execute();
             var user = script.Output;
             UserModel model = new UserModel(user.Id, user.FirstName, user.LastName, user.Password, user.Role);
-            ViewBag.User = model;
-            return View();
+            //ViewBag.User = model;
+            return View(model);
         }
 
         // GET: UserController/Create
@@ -46,10 +46,21 @@ namespace Project.WebUI.Controllers
         {
             try
             {
+                var script = new CreateUserTransactionScript
+                {
+                    FirstName = collection["FirstName"],
+                    LastName = collection["LastName"],
+                    Password = collection["Password"],
+                    Role = collection["Role"]
+                };
+                script.Execute();
+                ViewBag.Message = "User was created";
+                ViewBag.MessageType = "success";
                 return RedirectToAction(nameof(Index));
             }
             catch
             {
+                ViewBag.Message = "Failed to create user";
                 return View();
             }
         }

@@ -8,8 +8,9 @@ using Project.Data.DTO;
 
 namespace Project.Domain.TransactionScripts.UserTransactionScripts
 {
-    public class CreateUserTransactionScript : ITransactionScript<int>
-    {
+    public class UpdateUserTransactionScript : ITransactionScript<int>
+    { 
+        public string Id { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Password { get; set; }
@@ -22,6 +23,7 @@ namespace Project.Domain.TransactionScripts.UserTransactionScripts
         {
             var user = new UserDTO
             {
+                Id = Convert.ToInt32(Id),
                 FirstName = FirstName,
                 LastName = LastName,
                 Password = Password,
@@ -31,7 +33,7 @@ namespace Project.Domain.TransactionScripts.UserTransactionScripts
             };
 
             var gateway = new UserTableDataGateway();
-            gateway.InsertUser(user);
+            gateway.UpdateUser(user);
         }
     }
 }

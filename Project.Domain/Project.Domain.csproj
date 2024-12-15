@@ -162,9 +162,11 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TransactionScripts\ITransactionScript.cs" />
     <Compile Include="TransactionScripts\UserTransactionScripts\CreateUserTransactionScript.cs" />
+    <Compile Include="TransactionScripts\UserTransactionScripts\UpdateUserTransactionScript.cs" />
     <Compile Include="TransactionScripts\UserTransactionScripts\GetAllUsersTransactionScript.cs" />
     <Compile Include="TransactionScripts\UserTransactionScripts\GetUserDetailsTransactionScript.cs" />
-    <Compile Include="TransactionScripts\UserTransactionScripts\UserLoginScript.cs" />
+    <Compile Include="TransactionScripts\UserTransactionScripts\GetUsersBasedOnStatusTransactionScript.cs" />
+    <Compile Include="TransactionScripts\UserTransactionScripts\UserLoginTransactionScript.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Project.Data\Project.Data.csproj">

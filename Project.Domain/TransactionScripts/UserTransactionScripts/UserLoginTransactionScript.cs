@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Project.Domain.TransactionScripts.UserTransactionScripts
 {
-    public class UserLoginScript : ITransactionScript<bool>
+    public class UserLoginTransactionScript : ITransactionScript<bool>
     {
         public int Id { get; set; }
         public string Password { get; set; }

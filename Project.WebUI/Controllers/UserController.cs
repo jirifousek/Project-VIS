@@ -1,13 +1,18 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Project.Domain.TransactionScripts.UserTransactionScripts;
 using Project.WebUI.Models;
+using System.Security.Claims;
 
 namespace Project.WebUI.Controllers
 {
     public class UserController : Controller
     {
         // GET: UserController
+        [Authorize]
         public ActionResult Index()
         {
             var script = new GetAllUsersTransactionScript();
@@ -16,24 +21,26 @@ namespace Project.WebUI.Controllers
             List<UserModel> models = new List<UserModel>();
             foreach (var user in users)
             {
-                models.Add(new UserModel(user.Id, user.FirstName, user.LastName, user.Password, user.Role));
+                models.Add(new UserModel(user.Id, user.FirstName, user.LastName, user.Password, user.Role, user.Authorization, user.Status));
             }
 
             return View(models);
         }
 
         // GET: UserController/Details/5
+        [Authorize]
         public ActionResult Details(int id)
         {
             var script = new GetUserDetailsTransactionScript { Id = id };
             script.Execute();
             var user = script.Output;
-            UserModel model = new UserModel(user.Id, user.FirstName, user.LastName, user.Password, user.Role);
+            UserModel model = new UserModel(user.Id, user.FirstName, user.LastName, user.Password, user.Role, user.Authorization, user.Status);
             //ViewBag.User = model;
             return View(model);
         }
 
         // GET: UserController/Create
+        [Authorize]
         public ActionResult Create()
         {
             return View();
@@ -42,6 +49,7 @@ namespace Project.WebUI.Controllers
         // POST: UserController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public ActionResult Create(IFormCollection collection)
         {
             try
@@ -51,7 +59,10 @@ namespace Project.WebUI.Controllers
                     FirstName = collection["FirstName"],
                     LastName = collection["LastName"],
                     Password = collection["Password"],
-                    Role = collection["Role"]
+                    Role = collection["Role"],
+                    Authorization = collection["Authorization"],
+                    Status = collection["Status"]
+
                 };
                 script.Execute();
                 ViewBag.Message = "User was created";
@@ -60,12 +71,13 @@ namespace Project.WebUI.Controllers
             }
             catch
             {
-                ViewBag.Message = "Failed to create user";
+                ViewBag.Message = "Nepodařilo se vytvořit uživatele";
                 return View();
             }
         }
 
         // GET: UserController/Edit/5
+        [Authorize]
         public ActionResult Edit(int id)
         {
             return View();
@@ -74,6 +86,7 @@ namespace Project.WebUI.Controllers
         // POST: UserController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public ActionResult Edit(int id, IFormCollection collection)
         {
             try
@@ -87,6 +100,7 @@ namespace Project.WebUI.Controllers
         }
 
         // GET: UserController/Delete/5
+        [Authorize]
         public ActionResult Delete(int id)
         {
             return View();
@@ -106,5 +120,151 @@ namespace Project.WebUI.Controllers
                 return View();
             }
         }
+
+        // GET: UserController/Login
+        public ActionResult Login()
+        {
+            return View(new UserModel(0, "", "", "", "", "", ""));
+        }
+
+        // POST: UserController/Login
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Login(UserModel model)
+        {
+            var script = new GetUserDetailsTransactionScript { Id = model.Id };
+
+            script.Execute();
+
+            if (script.Output.Status == "APPROVAL")
+            {
+                ViewBag.Message = "Uživatel ještě nebyl schválen";
+                ViewBag.MessageType = "danger";
+                return View();
+            }
+
+            if (script.Output.Status == "REJECTED")
+            {
+                ViewBag.Message = "Žádost o vytvoření uživatele byla zamítnuta";
+                ViewBag.MessageType = "danger";
+                return View();
+            }
+
+
+            if (script.Output.Password == model.Password)
+            {
+                var claims = new List<Claim>
+                {
+                    new Claim(ClaimTypes.NameIdentifier, script.Output.Id.ToString()),
+                    new Claim(ClaimTypes.Name, script.Output.FirstName + " " + script.Output.LastName),
+                    new Claim(ClaimTypes.Role, script.Output.Authorization)
+                };
+
+                var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+
+                var authProperties = new AuthenticationProperties
+                {
+                    AllowRefresh = true,
+                    IsPersistent = true,
+                    ExpiresUtc = DateTimeOffset.UtcNow.AddHours(2)
+                };
+
+                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(identity), authProperties);
+
+                TempData["Message"] = "Přihlášení proběhlo úspěšně";
+                TempData["MessageType"] = "success";
+                return RedirectToAction("Index", "Home");
+            }
+            else
+            {
+                ViewBag.Message = "Špatné uživatelské jméno nebo heslo";
+                ViewBag.MessageType = "danger";
+                return View();
+            }
+        }
+
+        // GET: UserController/AccessDenied
+        public IActionResult AccessDenied()
+        {
+            return View();
+        }
+
+        // GET: UserController/Logout
+        public async Task<IActionResult> Logout()
+        {
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            return RedirectToAction("Login", "User");
+        }
+
+        // GET: UserController/CreationRequests
+        [Authorize]
+        [Authorize(Roles= "ADMIN")]
+        public IActionResult CreationRequests()
+        {
+            var script = new GetUsersBasedOnStatusTransactionScript { Status = "APPROVAL" };
+            script.Execute();
+            var users = script.Output;
+            List<UserModel> models = new List<UserModel>();
+            foreach (var user in users)
+            {
+                models.Add(new UserModel(user.Id, user.FirstName, user.LastName, user.Password, user.Role, user.Authorization, user.Status));
+            }
+            return View(models);
+        }
+
+        // POST: UserController/ApproveCreationRequest/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "ADMIN")]
+        public IActionResult ApproveCreationRequest(int id)
+        {
+            
+            var script = new GetUserDetailsTransactionScript { Id = id };
+            script.Execute();
+            var user = script.Output;
+            user.Status = "ACTIVE";
+            var updateScript = new UpdateUserTransactionScript
+            {
+                Id = user.Id.ToString(),
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Password = user.Password,
+                Role = user.Role,
+                Authorization = user.Authorization,
+                Status = user.Status
+            };
+            updateScript.Execute();
+            TempData["Message"] = "Žádost o vytvoření uživatele byla schválena";
+            TempData["MessageType"] = "success";
+            return RedirectToAction("CreationRequests");
+        }
+
+        // POST: UserController/RejectCreationRequest/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "ADMIN")]
+        public IActionResult RejectCreationRequest(int id)
+        {
+            var script = new GetUserDetailsTransactionScript { Id = id };
+            script.Execute();
+            var user = script.Output;
+            user.Status = "REJECTED";
+            var updateScript = new UpdateUserTransactionScript
+            {
+                Id = user.Id.ToString(),
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Password = user.Password,
+                Role = user.Role,
+                Authorization = user.Authorization,
+                Status = user.Status
+            };
+            updateScript.Execute();
+            TempData["Message"] = "Žádost o vytvoření uživatele byla zamítnuta";
+            TempData["MessageType"] = "success";
+            return RedirectToAction("CreationRequests");
+        }
+
+
     }
 }

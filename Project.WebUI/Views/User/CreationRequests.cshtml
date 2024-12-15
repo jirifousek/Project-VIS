@@ -1,18 +1,14 @@
 ﻿@model IEnumerable<Project.WebUI.Models.UserModel>
 
 @{
-    ViewData["Title"] = "Seznam";
+    ViewData["Title"] = "Seznam uživatelů ke schválení";
 }
 
-<h1>Seznam</h1>
+<h1>Seznam uživatelů ke schválení</h1>
 
-<p>
-    <a asp-action="Create">Vytvořit nového uživatele</a>
-</p>
-
-@if (ViewBag.Message != null)
+@if (TempData["Message"] != null)
 {
-    <div class="alert alert-@ViewBag.MessageType" role="alert">
+    <div class="alert alert-@TempData["MessageType"]" role="alert">
         @ViewBag.Message
     </div>
 }
@@ -34,6 +30,9 @@
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Role)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Authorization)
             </th>
             <th></th>
         </tr>
@@ -57,9 +56,13 @@
                 @Html.DisplayFor(modelItem => item.Role)
             </td>
             <td>
-                @Html.ActionLink("Upravit", "Edit", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Detail", "Details", new {  id=item.Id  }) |
-                @Html.ActionLink("Vymazat", "Delete", new { /* id=item.PrimaryKey */ })
+                @Html.DisplayFor(modelItem => item.Authorization)
+            </td>
+            <td>
+                <form asp-action="ApproveCreationRequest" method="post">
+                    <input type="hidden" name="id" value="@item.Id" />
+                    <button type="submit" class="btn btn-success">Approve</button>
+                </form>
             </td>
         </tr>
 }

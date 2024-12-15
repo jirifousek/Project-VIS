@@ -13,5 +13,7 @@ namespace Project.Data.DTO
         public String LastName { get; set; }
         public String Password { get; set; }
         public String Role { get; set; }
+        public String Authorization { get; set; }
+        public String Status { get; set; }
     }
 }

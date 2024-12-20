@@ -8,5 +8,10 @@ namespace Project.Data.DTO
 {
     public class OrderHeaderDTO
     {
+        public int Id { get; set; }
+        public int CustomerId { get; set; }
+        public DateTime ExpectedDeliveryDate { get; set; }
+        public double TotalPrice { get; set; }
+        public string Status { get; set; }  
     }
 }

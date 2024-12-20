@@ -4,17 +4,17 @@ namespace Project.WebUI.Models
 {
     public class UserModel
     {
-        [Display(Name = "Osobní číslo")]
+        [Display(Name = "Personal no")]
         public int Id { get; set; }
-        [Display(Name = "Jméno")]
+        [Display(Name = "First name")]
         public string FirstName { get; set; } = string.Empty;
-        [Display(Name = "Příjmení")]
+        [Display(Name = "Last name")]
         public string LastName { get; set; } = string.Empty;
-        [Display(Name = "Heslo")]
+        [Display(Name = "Password")]
         public string Password { get; set; } = string.Empty;
-        [Display(Name = "Role")]
+        [Display(Name = "Position")]
         public string Role { get; set; } = string.Empty;
-        [Display(Name = "Oprávnění")]
+        [Display(Name = "Authorization")]
         public string Authorization { get; set; } = string.Empty;
         public string Status { get; set; } = string.Empty;
 

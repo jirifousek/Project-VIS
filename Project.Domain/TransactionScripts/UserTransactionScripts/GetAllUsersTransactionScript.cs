@@ -8,7 +8,7 @@ using Project.Data.TDGW;
 
 namespace Project.Domain.TransactionScripts.UserTransactionScripts
 {
-    public class GetAllUsersTransactionScript : ITransactionScript<List<UserDTO>>
+    public class GetAllBusinessPartnersTransactionScript : ITransactionScript<List<UserDTO>>
     {
         public List<UserDTO> Output { get; private set; }
 

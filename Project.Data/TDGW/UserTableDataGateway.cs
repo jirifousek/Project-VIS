@@ -34,7 +34,6 @@ namespace Project.Data.TDGW
                 connection.Open();
                 using (SqlCommand command = new SqlCommand(query, connection))
                 {
-                    //command.Parameters.Add("id", SqlDbType.Int32).Value = id;
                     command.Parameters.AddWithValue("@id", id);
 
                     using (SqlDataReader reader = command.ExecuteReader())

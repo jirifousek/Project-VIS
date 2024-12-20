@@ -13,5 +13,6 @@ namespace Project.Data.DTO
         public String Incoterms { get; set; }
         public String PaymentTerms { get; set; }
         public String Role { get; set; }
+        public String Address { get; set; }
     }
 }

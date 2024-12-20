@@ -23,8 +23,17 @@
                         <ul class="navbar-nav flex-grow-1">
                            <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="Index">Uživatelé</a>
-                            </li>
-                       
+                           </li>
+                           <li class="nav-item">
+                                  <a class="nav-link text-dark" asp-area="" asp-controller="BusinessPartner" asp-action="Index">Obchodní partneři</a>
+                           </li>
+                           @if (User.IsInRole("ADMIN"))
+                           {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="CreationRequests">Žádosti o vyvtoření uživatele</a>
+                                </li>
+                           }
+                
                         </ul>
                     </div>
                 }
@@ -67,7 +76,7 @@
 
     <footer class="border-top footer text-muted">
         <div class="container">
-            &copy; 2024 - FOU0027 - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            &copy; 2024 - FOU0027
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>

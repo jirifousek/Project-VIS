@@ -26,9 +26,6 @@
                 @Html.DisplayNameFor(model => model.LastName)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Password)
-            </th>
-            <th>
                 @Html.DisplayNameFor(model => model.Role)
             </th>
             <th>
@@ -50,9 +47,6 @@
                 @Html.DisplayFor(modelItem => item.LastName)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Password)
-            </td>
-            <td>
                 @Html.DisplayFor(modelItem => item.Role)
             </td>
             <td>
@@ -62,6 +56,10 @@
                 <form asp-action="ApproveCreationRequest" method="post">
                     <input type="hidden" name="id" value="@item.Id" />
                     <button type="submit" class="btn btn-success">Approve</button>
+                </form>
+                <form asp-action="RejectCreationRequest" method="post">
+                    <input type="hidden" name="id" value="@item.Id" />
+                    <button type="submit" class="btn btn-danger">Reject</button>
                 </form>
             </td>
         </tr>

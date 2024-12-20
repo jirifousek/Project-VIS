@@ -11,7 +11,7 @@ namespace Project.Data.DTO
         public int Id { get; set; }
         public String Description { get; set; }
         public int Stock { get; set; }
-        public int UnitOfMeasure { get; set; }
+        public string UnitOfMeasure { get; set; }
         public int Weight { get; set; }
         public double Price { get; set; }
     }

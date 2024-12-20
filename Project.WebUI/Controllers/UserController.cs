@@ -15,7 +15,7 @@ namespace Project.WebUI.Controllers
         [Authorize]
         public ActionResult Index()
         {
-            var script = new GetAllUsersTransactionScript();
+            var script = new GetAllBusinessPartnersTransactionScript();
             script.Execute();
             var users = script.Output;
             List<UserModel> models = new List<UserModel>();
@@ -71,7 +71,7 @@ namespace Project.WebUI.Controllers
             }
             catch
             {
-                ViewBag.Message = "Nepodařilo se vytvořit uživatele";
+                ViewBag.Message = "There was and error during creation of a user";
                 return View();
             }
         }
@@ -138,14 +138,14 @@ namespace Project.WebUI.Controllers
 
             if (script.Output.Status == "APPROVAL")
             {
-                ViewBag.Message = "Uživatel ještě nebyl schválen";
+                ViewBag.Message = "The request for creating an user was not processed yet";
                 ViewBag.MessageType = "danger";
                 return View();
             }
 
             if (script.Output.Status == "REJECTED")
             {
-                ViewBag.Message = "Žádost o vytvoření uživatele byla zamítnuta";
+                ViewBag.Message = "Your reqest for creating an user was rejected";
                 ViewBag.MessageType = "danger";
                 return View();
             }
@@ -171,13 +171,13 @@ namespace Project.WebUI.Controllers
 
                 await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(identity), authProperties);
 
-                TempData["Message"] = "Přihlášení proběhlo úspěšně";
+                TempData["Message"] = "You are logged in";
                 TempData["MessageType"] = "success";
                 return RedirectToAction("Index", "Home");
             }
             else
             {
-                ViewBag.Message = "Špatné uživatelské jméno nebo heslo";
+                ViewBag.Message = "Wrong user credentials";
                 ViewBag.MessageType = "danger";
                 return View();
             }
@@ -234,7 +234,7 @@ namespace Project.WebUI.Controllers
                 Status = user.Status
             };
             updateScript.Execute();
-            TempData["Message"] = "Žádost o vytvoření uživatele byla schválena";
+            TempData["Message"] = "The request was approved";
             TempData["MessageType"] = "success";
             return RedirectToAction("CreationRequests");
         }
@@ -260,7 +260,7 @@ namespace Project.WebUI.Controllers
                 Status = user.Status
             };
             updateScript.Execute();
-            TempData["Message"] = "Žádost o vytvoření uživatele byla zamítnuta";
+            TempData["Message"] = "The request was rejected";
             TempData["MessageType"] = "success";
             return RedirectToAction("CreationRequests");
         }

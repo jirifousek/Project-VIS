@@ -189,6 +189,7 @@
     </Compile>
     <Compile Include="TDGW\BusinessPartnerTableDataGateway.cs" />
     <Compile Include="TDGW\MaterialTableDataGateway.cs" />
+    <Compile Include="TDGW\OrderTableDataGateway.cs" />
     <Compile Include="TDGW\UserTableDataGateway.cs" />
   </ItemGroup>
   <ItemGroup>

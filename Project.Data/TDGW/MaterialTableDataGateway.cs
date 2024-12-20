@@ -25,9 +25,9 @@ namespace Project.Data.TDGW
         public MaterialDTO GetMaterialById(int id)
         {
             DataTable result = new DataTable();
-            var query = "SELECT material_id, description, qty_available, unit_of_measure, brutto_weight, price" +
-                        "FROM material m " +
-                        "WHERE Id = @id;";
+            var query = "SELECT material_id, description, qty_available, unit_of_measure, brutto_weight, price " +
+                        "FROM material " +
+                        "WHERE material_id = @id;";
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 connection.Open();
@@ -91,13 +91,13 @@ namespace Project.Data.TDGW
         public void UpdateMaterial(MaterialDTO material)
         {
             var query = "UPDATE material SET description = @description, qty_available = @qty_available, unit_of_measure = @unit_of_measure, brutto_weight = @brutto_weight, price = @price " +
-                "WHERE material_id = @material_id";
+                "WHERE material_id = @material_id;";
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 connection.Open();
                 using (SqlCommand command = new SqlCommand(query, connection))
                 {
-                    command.Parameters.AddWithValue("@id", material.Id);
+                    command.Parameters.AddWithValue("@material_id", material.Id);
                     command.Parameters.AddWithValue("@description", material.Description);
                     command.Parameters.AddWithValue("@qty_available", material.Stock);
                     command.Parameters.AddWithValue("@unit_of_measure", material.UnitOfMeasure);
@@ -109,10 +109,12 @@ namespace Project.Data.TDGW
             }
         }
 
-        public void InsertMaterial(MaterialDTO material)
+        public int InsertMaterial(MaterialDTO material)
         {
             var query = "INSERT INTO material (description, qty_available, unit_of_measure, brutto_weight, price) " +
-                "VALUES (@description, @qty_available, @unit_of_measure, @brutto_weight, @price)";
+                "VALUES (@description, @qty_available, @unit_of_measure, @brutto_weight, @price); " +
+                "SELECT SCOPE_IDENTITY();";
+            int id = -1;
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 connection.Open();
@@ -124,7 +126,8 @@ namespace Project.Data.TDGW
                     command.Parameters.AddWithValue("@brutto_weight", material.Weight);
                     command.Parameters.AddWithValue("@price", material.Price);
 
-                    command.ExecuteNonQuery();
+                    id = Convert.ToInt32(command.ExecuteScalar());
+                    return id;
                 }
             }
         }

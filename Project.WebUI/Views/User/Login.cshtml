@@ -1,13 +1,22 @@
 ﻿@model Project.WebUI.Models.UserModel
 
-<form asp-action="Login" method="post">
-    <div>
-        <label asp-for="Id">Osobní číslo</label>
-        <input asp-for="Id" />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Login" method="post">
+            <div class="form-group">
+                <label asp-for="Id" class="control-label">Personal number</label>
+                <input asp-for="Id" class="form-control" />
+            </div>
+            <br />
+            <div class="form-group">
+                <label asp-for="Password" ckass="control-label">Password</label>
+                <input asp-for="Password" type="password" class="form-control" />
+            </div>
+            <br />
+    
+            <div class="form-group">
+            <button type="submit" class="btn btn-primary">Login</button>
+            </div>
+        </form>
     </div>
-    <div>
-        <label asp-for="Password">Heslo</label>
-        <input asp-for="Password" type="password" />
-    </div>
-    <button type="submit">Přihlásit</button>
-</form>
+</div>

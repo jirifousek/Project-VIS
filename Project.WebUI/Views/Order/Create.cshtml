@@ -4,18 +4,17 @@
     ViewData["Title"] = "Create";
 }
 
-<h1>Create</h1>
+<h1>Create Order</h1>
 
-<h4>OrderModel</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="BueinessPaetner.Id" class="control-label"></label>
-                <select asp-for="BueinessPaetner.Id" class="form-control" asp-items="ViewBag.BusinessPartners"></select>
-                <span asp-validation-for="BueinessPaetner.Id" class="text-danger"></span>
+                <label asp-for="BusinessPartner.Id" class="control-label"></label>
+                <select asp-for="BusinessPartner.Id" class="form-control" asp-items="ViewBag.BusinessPartners"></select>
+                <span asp-validation-for="BusinessPartner.Id" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="ExpectedDeliveryDate" class="control-label"></label>
@@ -23,13 +22,13 @@
                 <span asp-validation-for="ExpectedDeliveryDate" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="TotalPrice" class="control-label"></label>
-                <input asp-for="TotalPrice" class="form-control" />
+                <label asp-for="TotalPrice" class="control-label" hidden></label>
+                <input asp-for="TotalPrice" class="form-control" hidden />
                 <span asp-validation-for="TotalPrice" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Status" class="control-label"></label>
-                <input asp-for="Status" class="form-control" value="NEW" />
+                <label asp-for="Status" class="control-label" hidden></label>
+                <input asp-for="Status" class="form-control" value="NEW" hidden />
                 <span asp-validation-for="Status" class="text-danger"></span>
             </div>
             <!-- Table for OrderItemModels -->
@@ -44,7 +43,6 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <!-- Initial row for OrderItemModel -->
                         <tr>
                             <td>
                                 <select name="OrderItems[0].MaterialId" class="form-control">
@@ -65,7 +63,8 @@
                 </table>
                 <button type="button" class="btn btn-secondary" onclick="addRow()">Add Item</button>
             </div>
-            <input type="number" name="itemCount" vallue="1" hidden />"
+            <input type="number" name="itemCount" value="1" hidden />
+            <br />
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>
@@ -91,7 +90,7 @@
             newRow.innerHTML = `
                         <td>
                             <select name="OrderItems[${rowIndex}].MaterialId" class="form-control">
-                                ${materialsOptions.map(material => `<option value="${material.Value}">${material.Text}</option>`).join('')}
+                                ${materialsOptions.map(material => `<option value="${material.value}">${material.text}</option>`).join('')}
                             </select>
                         </td>
                         <td>

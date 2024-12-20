@@ -61,9 +61,16 @@ namespace Project.WebUI.Controllers
                     Password = collection["Password"],
                     Role = collection["Role"],
                     Authorization = collection["Authorization"],
-                    Status = collection["Status"]
+                    Status = "APPROVAL"
 
                 };
+
+                if (script.Authorization == null)
+                {
+                    script.Authorization = "USER";
+                }
+
+
                 script.Execute();
                 ViewBag.Message = "User was created";
                 ViewBag.MessageType = "success";
@@ -109,6 +116,7 @@ namespace Project.WebUI.Controllers
         // POST: UserController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public ActionResult Delete(int id, IFormCollection collection)
         {
             try
@@ -190,6 +198,7 @@ namespace Project.WebUI.Controllers
         }
 
         // GET: UserController/Logout
+        [Authorize]
         public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);

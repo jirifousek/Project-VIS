@@ -25,9 +25,9 @@ namespace Project.Data.TDGW
         public OrderHeaderDTO GetOrderById(int id)
         {
             DataTable result = new DataTable();
-            var query = "SELECT document_id, sold_to, expected_delivery_date, price, status" +
+            var query = "SELECT document_id, sold_to, expected_delivery_date, price, status " +
                         "FROM sales_order_header " +
-                        "WHERE Id = @id;";
+                        "WHERE document_id = @id;";
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 connection.Open();
@@ -140,7 +140,7 @@ namespace Project.Data.TDGW
             }
         }
 
-        public void CreateOrder(OrderHeaderDTO order, List<OrderItemDTO> items)
+        public int CreateOrder(OrderHeaderDTO order, List<OrderItemDTO> items)
         {
             var query = "INSERT INTO sales_order_header (sold_to, expected_delivery_date, price, status) " +
                         "VALUES (@customerId, @expectedDeliveryDate, @totalPrice, @status); " +
@@ -176,8 +176,9 @@ namespace Project.Data.TDGW
                             command.ExecuteNonQuery();
                         }
                     }
-
+                    
                     transaction.Commit();
+                    return orderId;
                 }
             }
         }

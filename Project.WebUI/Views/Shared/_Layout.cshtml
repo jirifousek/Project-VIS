@@ -21,16 +21,30 @@
                 {
                     <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                         <ul class="navbar-nav flex-grow-1">
-                           <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="Index">Uživatelé</a>
-                           </li>
-                           <li class="nav-item">
-                                  <a class="nav-link text-dark" asp-area="" asp-controller="BusinessPartner" asp-action="Index">Obchodní partneři</a>
-                           </li>
+                            <li class="nav-item"> 
+                                  <a class="nav-link text-dark" asp-area="" asp-controller="BusinessPartner" asp-action="Index">Business partners</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Material" asp-action="Index">Materials</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Order" asp-action="Index">Orders</a>
+                            </li>
+                            @if (User.IsInRole("USER"))
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="Create">Request a new user</a>
+                                </li>
+                            }
+
                            @if (User.IsInRole("ADMIN"))
                            {
                                 <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="CreationRequests">Žádosti o vyvtoření uživatele</a>
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="Index">Users</a>
+                                </li>
+                                
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="CreationRequests">User creation requests</a>
                                 </li>
                            }
                 
@@ -41,16 +55,16 @@
                     @if (User.Identity.IsAuthenticated)
                     {
                         <li class="nav-item">
-                            <span class="nav-link text-dark">Ahoj @User.Identity.Name !</span>
+                            <span class="nav-link text-dark">Hi @User.Identity.Name !</span>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="Logout">Odhlásit</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="Logout">Log out</a>
                         </li>
                     }
                     else
                     {
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="Login">Přihlásit</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="Login">Log in</a>
                         </li>
                     }
                 </ul>

@@ -87,10 +87,12 @@ namespace Project.Data.TDGW
             return businessPartners;
         }
 
-        public void InsertBusinessPartner(BusinessPartnerDTO businessPartner)
+        public int InsertBusinessPartner(BusinessPartnerDTO businessPartner)
         {
             var query = "INSERT INTO business_partner (name, incoterms, payment_terms, role, address) " +
-                        "VALUES (@name, @incoterms, @payment_terms, @role, @address);";
+                        "VALUES (@name, @incoterms, @payment_terms, @role, @address); " +
+                        "SELECT SCOPE_IDENTITY();";
+            int id = -1;
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 connection.Open();
@@ -101,7 +103,10 @@ namespace Project.Data.TDGW
                     command.Parameters.AddWithValue("payment_terms", businessPartner.PaymentTerms);
                     command.Parameters.AddWithValue("role", businessPartner.Role);
                     command.Parameters.AddWithValue("address", businessPartner.Address);
-                    command.ExecuteNonQuery();
+
+                    id = Convert.ToInt32(command.ExecuteScalar());
+
+                    return id;
                 }
             }
         }
